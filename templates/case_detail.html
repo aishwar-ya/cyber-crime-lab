@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}Case #{{ case.id }}{% endblock %}
+{% block content %}
+
+<section class="page-head sticker pop">
+  <div>
+    <a class="back-link" href="{{ url_for('cases') }}">← All Cases</a>
+    <h2>🔎 Case #{{ case.id }}</h2>
+    <h3 class="case-title">{{ case.title }}</h3>
+    <p>Created by {{ case.creator.name }} on {{ case.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+    <a class="btn btn-cc btn-yellow" href="{{ url_for('case_report', case_id=case.id) }}">📄 Generate PDF</a>
+  </div>
+  <svg class="char head-char bob" viewBox="0 0 200 230" aria-hidden="true"><use href="#detective"/></svg>
+</section>
+
+<div class="row g-4 mt-1">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-lg-4">
+
+    <!-- CASE STATUS -->
+    <div class="panel sticker pop mb-4">
+      <h5>🎯 Case Status</h5>
+      <div class="mb-3">{{ status_badge(case.status) }}</div>
+      <form method="post" action="{{ url_for('update_case_status', case_id=case.id) }}" class="d-flex gap-2">
+        <select class="form-select" name="status">
+          {% for s in ["Open", "Under Review", "Closed"] %}
+          <option value="{{ s }}" {% if case.status == s %}selected{% endif %}>{{ {'Open':'🟢 Open','Under Review':'🔍 Investigating','Closed':'✅ Solved'}[s] }}</option>
+          {% endfor %}
+        </select>
+        <button class="btn btn-cc btn-purple">Save</button>
+      </form>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="panel sticker pop d1">
+      <h5>📝 Description</h5>
+      <p class="muted">{{ case.description or "No description provided." }}</p>
+      {% if case.closed_at %}
+      <hr>
+      <small class="muted">Closed: {{ case.closed_at.strftime('%d %b %Y, %H:%M') }}</small>
+      {% endif %}
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="panel sticker danger-panel pop d2 mt-4">
+      <h5>⚠️ Danger Zone</h5>
+      <p class="small">Deleting a case also removes its stored evidence files.</p>
+      <form method="post" action="{{ url_for('delete_case', case_id=case.id) }}" onsubmit="return confirm('Delete this case and all its evidence?');">
+        <button class="btn btn-cc btn-red btn-sm">🗑️ Delete Case</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-lg-8">
+
+    <!-- ADD DIGITAL EVIDENCE -->
+    <div class="panel sticker pop mb-4">
+      <h5 class="mb-3">📤 Add Digital Evidence</h5>
+      <form method="post" action="{{ url_for('upload_evidence', case_id=case.id) }}" enctype="multipart/form-data">
+        <div class="input-group">
+          <input class="form-control" type="file" name="evidence" required>
+          <button class="btn btn-cc btn-cyan">Upload &amp; Hash</button>
+        </div>
+      </form>
+      <small class="muted">Maximum 50 MB. The system records MD5 and SHA-256 hashes.</small>
+    </div>
+
+    <!-- EVIDENCE REGISTER -->
+    <div class="panel sticker pop d1">
+      <div class="panel-head"><h4>🗃️ Evidence Register</h4><span class="count-pill">{{ evidence|length }} item(s)</span></div>
+      {% if evidence %}
+        {% for item in evidence %}
+        <div class="evidence-card">
+          <div class="ev-top">
+            <div>
+              <div class="ev-name">📄 {{ item.filename }}</div>
+              <span class="type-chip">📁 {{ item.file_type }}</span>
+              <small class="muted ms-2">Uploaded {{ item.uploaded_at.strftime('%d %b %Y, %H:%M') }}</small>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <a class="btn btn-cc btn-cyan btn-sm" href="{{ url_for('download_evidence', evidence_id=item.id) }}">⬇️ Download</a>
+              <form method="post" action="{{ url_for('delete_evidence', evidence_id=item.id) }}" onsubmit="return confirm('Remove this evidence item?');">
+                <button class="btn btn-cc btn-red btn-sm">🗑️ Delete</button>
+              </form>
+            </div>
+          </div>
+          <div class="hash-box">
+            <div><b>🔐 MD5</b><code>{{ item.md5_hash }}</code></div>
+            <div><b>🛡️ SHA-256</b><code>{{ item.sha256_hash }}</code></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><div class="e-ico bob">🔍</div><h5>No evidence found!</h5><p>Upload a file and let's investigate it.</p></div>
+      {% endif %}
+    </div>
+
+    <!-- CHAIN OF CUSTODY -->
+    <div class="panel sticker pop d2 mt-4">
+      <div class="panel-head"><h4>🔗 Chain of Custody</h4><span class="count-pill">{{ custody_records|length }} record(s)</span></div>
+      {% if custody_records %}
+      <div class="fx-legend">
+        <span class="fx-chip fx-up">📤 Uploaded</span>
+        <span class="fx-chip fx-down">📥 Downloaded</span>
+        <span class="fx-chip fx-del">🗑️ Deleted</span>
+      </div>
+      <ol class="fx-timeline">
+        {% for record in custody_records %}
+        {% set kind = 'up' if 'Upload' in record.action else ('down' if 'Download' in record.action else ('del' if 'Delete' in record.action else 'other')) %}
+        <li class="fx-item fx-{{ kind }}" style="--i: {{ loop.index0 }}">
+          <span class="fx-node" aria-hidden="true">{{ {'up':'📤','down':'📥','del':'🗑️','other':'📌'}[kind] }}</span>
+          <div class="fx-card">
+            <div class="fx-head">
+              <span class="fx-action">{{ record.action }}</span>
+              <span class="fx-time">🕒 {{ record.timestamp.strftime('%d %b %Y, %H:%M') }}</span>
+            </div>
+            <div class="fx-row"><span>🕒 Date &amp; Time</span><b>{{ record.timestamp.strftime('%d %b %Y, %H:%M') }}</b></div>
+            <div class="fx-row"><span>🕵️ Investigator</span><b>{{ record.user.name }}</b></div>
+            <div class="fx-row"><span>📄 Evidence</span><b>
+              {% if record.evidence_filename %}<span class="fx-file">{{ record.evidence_filename }}</span>
+              {% elif record.evidence %}<span class="fx-file">{{ record.evidence.filename }}</span>
+              {% else %}Case{% endif %}
+            </b></div>
+            <div class="fx-row"><span>💬 Description</span><b>{{ record.description or "No description." }}</b></div>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      {% else %}
+        <div class="empty-state"><div class="e-ico bob">🔗</div><h5>No investigation history yet.</h5><p>No chain-of-custody records have been recorded yet.</p></div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var items = document.querySelectorAll('.fx-item');
+  if (!items.length) { return; }
+  if (!('IntersectionObserver' in window)) { return; }   /* no JS animation support: everything stays visible */
+  document.documentElement.classList.add('js-on');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(function (el) { io.observe(el); });
+})();
+</script>
+{% endblock %}

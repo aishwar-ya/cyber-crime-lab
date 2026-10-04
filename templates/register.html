@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="row align-items-center g-4 auth-row">
+  <div class="col-lg-6 text-center d-none d-md-block">
+    <svg class="char bob" style="max-width:300px" viewBox="0 0 200 230" role="img" aria-label="Cartoon investigator"><use href="#detective"/></svg>
+  </div>
+  <div class="col-lg-6">
+    <div class="auth-card sticker pop">
+      <h2>Join the Investigation Team! 🕵️‍♀️</h2>
+      <p class="muted">Use a unique email address and a password of at least 6 characters.</p>
+      <form method="post">
+        <label class="form-label">Name</label>
+        <div class="input-group mb-3"><span class="input-group-text">👤</span><input class="form-control" name="name" required></div>
+        <label class="form-label">Email</label>
+        <div class="input-group mb-3"><span class="input-group-text">📧</span><input class="form-control" type="email" name="email" required></div>
+        <label class="form-label">Password</label>
+        <div class="input-group mb-4"><span class="input-group-text">🔐</span><input class="form-control" type="password" name="password" minlength="6" required></div>
+        <button class="btn btn-cc btn-pink w-100 btn-lg">🚀 Create Investigator Account</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

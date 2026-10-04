@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}Cases{% endblock %}
+{% block content %}
+<section class="page-head sticker pop">
+  <div>
+    <h2>📁 Investigation Cases</h2>
+    <p>Manage registered cybercrime investigations.</p>
+    <a class="btn btn-cc btn-yellow" href="{{ url_for('new_case') }}">＋ New Case</a>
+  </div>
+  <svg class="char head-char bob" viewBox="0 0 200 230" aria-hidden="true"><use href="#detective"/></svg>
+</section>
+
+{% if cases %}
+<div class="row g-4 mt-1">
+{% for case in cases %}
+  <div class="col-md-6 col-xl-4">
+    <div class="file-card sticker pop">
+      <div class="tab">#{{ case.id }}</div>
+      <h5>{{ case.title }}</h5>
+      <p class="muted">{{ (case.description or 'No description')[:70] }}</p>
+      <div class="cf-meta mb-2">{{ status_badge(case.status) }}</div>
+      <div class="cf-meta mb-3"><span>🕵️ {{ case.creator.name }}</span><span>📄 {{ case.evidence_items|length }} evidence</span><span>📅 {{ case.created_at.strftime('%d %b %Y') }}</span></div>
+      <a class="btn btn-cc btn-cyan w-100" href="{{ url_for('case_detail', case_id=case.id) }}">🔎 View</a>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% else %}
+<div class="panel sticker mt-3"><div class="empty-state"><div class="e-ico bob">🕵️‍♀️</div><h5>Your investigation board is empty!</h5><p>Create your first case to start investigating.</p><a class="btn btn-cc btn-purple" href="{{ url_for('new_case') }}">🚀 Create Case</a></div></div>
+{% endif %}
+{% endblock %}

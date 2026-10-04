@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Cyber Crime Lab{% endblock %}
+{% block content %}
+<section class="hero sticker pop">
+  <span class="fl f1">🔍</span><span class="fl f2">🛡️</span><span class="fl f3">📁</span><span class="fl f4">🔐</span>
+  <span class="fl f5">💻</span><span class="fl f6">📄</span><span class="fl f7">🔎</span><span class="fl f8">✨</span>
+  <div class="row align-items-center g-4 position-relative">
+    <div class="col-lg-6">
+      <h1 class="hero-title">Welcome to Cyber Crime Lab! 🕵️‍♀️💻</h1>
+      <p class="hero-sub">Investigate. Analyze. Verify. Protect.</p>
+      <div class="d-flex flex-wrap gap-3">
+        <a class="btn btn-cc btn-purple btn-lg" href="{{ url_for('login') }}">🚀 Open Lab</a>
+        <a class="btn btn-cc btn-pink btn-lg" href="{{ url_for('register') }}">✨ Create Account</a>
+      </div>
+    </div>
+    <div class="col-lg-6 text-center">
+      <svg class="char char-hero bob" viewBox="0 0 420 300" role="img" aria-label="Cartoon cyber detective with laptop, shield and robot helper"><use href="#scene"/></svg>
+    </div>
+  </div>
+</section>
+
+<div class="row g-4 mt-1">
+  <div class="col-md-4"><div class="feature sticker f-purple pop d1"><div class="f-ico bob">🕵️</div><h4>Case Management</h4><p>Create and manage your cybercrime investigations.</p></div></div>
+  <div class="col-md-4"><div class="feature sticker f-cyan pop d2"><div class="f-ico bob">🔍</div><h4>Evidence &amp; Hash Verification</h4><p>Upload digital evidence and verify its integrity using MD5 and SHA-256.</p></div></div>
+  <div class="col-md-4"><div class="feature sticker f-pink pop d3"><div class="f-ico bob">📄</div><h4>Forensic Reports</h4><p>Generate professional forensic case reports.</p></div></div>
+</div>
+{% endblock %}

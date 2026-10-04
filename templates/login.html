@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row align-items-center g-4 auth-row">
+  <div class="col-lg-6 text-center d-none d-md-block">
+    <svg class="char char-hero bob" viewBox="0 0 420 300" role="img" aria-label="Detective at a computer"><use href="#scene"/></svg>
+  </div>
+  <div class="col-lg-6">
+    <div class="auth-card sticker pop">
+      <svg class="auth-shield spin-bob" viewBox="0 0 100 120" aria-hidden="true"><use href="#shield"/></svg>
+      <h2>Welcome Back, Detective! 🕵️</h2>
+      <p class="muted">Ready to solve another digital mystery?</p>
+      <form method="post">
+        <label class="form-label">Email</label>
+        <div class="input-group mb-3"><span class="input-group-text">📧</span><input class="form-control" type="email" name="email" required></div>
+        <label class="form-label">Password</label>
+        <div class="input-group mb-4"><span class="input-group-text">🔐</span><input class="form-control" type="password" name="password" required></div>
+        <button class="btn btn-cc btn-purple w-100 btn-lg">🔓 Enter the Lab</button>
+      </form>
+      <p class="text-center mt-3 mb-0">New investigator? <a href="{{ url_for('register') }}">Create an account</a></p>
+      <div class="demo-box mt-4"><b>🤖 Demo admin</b><br>admin@cyberlab.local<br>admin123</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

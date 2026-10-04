@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="page-head sticker pop">
+  <div>
+    <h2>🕵️ Investigation Dashboard</h2>
+    <p>Welcome back, Detective {{ current_user.name }}!</p>
+    <a class="btn btn-cc btn-yellow" href="{{ url_for('new_case') }}">＋ New Case</a>
+  </div>
+  <svg class="char head-char bob" viewBox="0 0 120 140" aria-hidden="true"><use href="#robot"/></svg>
+</section>
+
+<div class="row g-3 my-2 stats">
+  <div class="col-6 col-md"><div class="stat sticker s-purple pop d1"><span class="s-ico">📁</span><strong data-count="{{ total_cases }}">{{ total_cases }}</strong><span>Total Cases</span></div></div>
+  <div class="col-6 col-md"><div class="stat sticker s-mint pop d2"><span class="s-ico">🔓</span><strong data-count="{{ open_cases }}">{{ open_cases }}</strong><span>Open</span></div></div>
+  <div class="col-6 col-md"><div class="stat sticker s-yellow pop d3"><span class="s-ico">🔎</span><strong data-count="{{ review_cases }}">{{ review_cases }}</strong><span>Under Review</span></div></div>
+  <div class="col-6 col-md"><div class="stat sticker s-pink pop d4"><span class="s-ico">📄</span><strong data-count="{{ total_evidence }}">{{ total_evidence }}</strong><span>Evidence Items</span></div></div>
+  <div class="col-12 col-md"><div class="stat sticker s-cyan pop d5"><span class="s-ico">✅</span><strong data-count="{{ closed_cases }}">{{ closed_cases }}</strong><span>Closed Cases</span></div></div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-7">
+    <div class="panel sticker pop">
+      <div class="panel-head"><h4>📋 Recent Cases</h4><a href="{{ url_for('cases') }}">View all</a></div>
+      {% if recent_cases %}
+        {% for case in recent_cases %}
+        <div class="case-file">
+          <div class="cf-id">#{{ case.id }}</div>
+          <div class="cf-body">
+            <b>{{ case.title }}</b>
+            <div class="cf-meta">{{ status_badge(case.status) }} <span>📅 {{ case.created_at.strftime('%d %b %Y') }}</span> <span>📄 {{ case.evidence_items|length }} evidence</span></div>
+          </div>
+          <a class="btn btn-cc btn-cyan btn-sm" href="{{ url_for('case_detail', case_id=case.id) }}">View</a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><div class="e-ico bob">🕵️‍♀️</div><h5>Your investigation board is empty!</h5><p>Create your first case to start investigating.</p><a class="btn btn-cc btn-purple" href="{{ url_for('new_case') }}">🚀 Create Case</a></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="panel sticker pop d2">
+      <div class="panel-head"><h4>🗂️ Recent Evidence</h4></div>
+      {% if recent_evidence %}
+        {% for item in recent_evidence %}
+        <div class="evidence-mini"><span class="file-icon">📄</span><div><b>{{ item.filename }}</b><br><small>Case #{{ item.case_id }} • {{ item.file_type }}</small></div></div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><div class="e-ico bob">🔍</div><h5>No evidence found!</h5><p>Upload a file and let's investigate it.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
