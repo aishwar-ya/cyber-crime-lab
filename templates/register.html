@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="portfolio-auth">
+  <div class="auth-art"><img src="{{ url_for('static', filename='images/stickers/detective_clipboard.png') }}" alt="Detective"><img class="auth-art-robot" src="{{ url_for('static', filename='images/stickers/robot_forensics.png') }}" alt="Robot"></div>
+  <div class="auth-card sticker pop auth-theme-card portfolio-auth-card">
+    <img class="auth-top-icon" src="{{ url_for('static', filename='images/stickers/shield_lock.png') }}" alt="">
+    <h2>Join the<br>Investigation Team!</h2>
+    <p class="muted">Use a unique email address and a password of at least 6 characters.</p>
+    <form method="post">
+      <label class="form-label">Name</label>
+      <div class="input-group mb-3"><span class="input-group-text">👤</span><input class="form-control" name="name" required></div>
+      <label class="form-label">Email</label>
+      <div class="input-group mb-3"><span class="input-group-text">📧</span><input class="form-control" type="email" name="email" required></div>
+      <label class="form-label">Password</label>
+      <div class="input-group mb-4"><span class="input-group-text">🔐</span><input class="form-control" type="password" name="password" minlength="6" required></div>
+      <button class="btn btn-cc btn-pink w-100 btn-lg">🚀 Create Investigator Account</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

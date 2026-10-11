@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "_macros.html" import status_badge %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="portfolio-dashboard-hero">
+  <img class="hero-sticker hero-folder-sticker" src="{{ url_for('static', filename='images/stickers/folder_blue.png') }}" alt="">
+  <img class="hero-sticker hero-evidence-sticker" src="{{ url_for('static', filename='images/stickers/evidence_card.png') }}" alt="">
+  <img class="hero-sticker hero-shield-sticker" src="{{ url_for('static', filename='images/stickers/shield_lock.png') }}" alt="">
+  <span class="hero-sparkle s1">✦</span><span class="hero-sparkle s2">✦</span><span class="hero-sparkle s3">✦</span>
+
+  <div class="portfolio-hero-character detective-side">
+    <img src="{{ url_for('static', filename='images/stickers/detective_laptop.png') }}" alt="Detective">
+  </div>
+
+  <div class="portfolio-hero-copy">
+    <div class="portfolio-kicker">🕵️ DIGITAL FORENSICS • INVESTIGATION LAB</div>
+    <h1>Investigation <span>Dashboard</span></h1>
+    <p>Welcome back, Detective {{ current_user.name }}!</p>
+    <a class="btn btn-cc btn-gradient hero-new-case" href="{{ url_for('new_case') }}">＋ New Case</a>
+  </div>
+
+  <div class="portfolio-hero-character robot-side">
+    <img src="{{ url_for('static', filename='images/stickers/robot_point.png') }}" alt="Robot assistant">
+  </div>
+</section>
+
+<div class="row g-3 my-3 stats dashboard-stats">
+  <div class="col-6 col-md"><div class="stat portfolio-stat stat-purple sticker"><img src="{{ url_for('static', filename='images/stickers/folder_purple.png') }}" class="stat-img" alt=""><strong data-count="{{ total_cases }}">{{ total_cases }}</strong><span>Total Cases</span></div></div>
+  <div class="col-6 col-md"><div class="stat portfolio-stat stat-mint sticker"><img src="{{ url_for('static', filename='images/stickers/shield_lock.png') }}" class="stat-img" alt=""><strong data-count="{{ open_cases }}">{{ open_cases }}</strong><span>Open</span></div></div>
+  <div class="col-6 col-md"><div class="stat portfolio-stat stat-yellow sticker"><img src="{{ url_for('static', filename='images/stickers/magnifier.png') }}" class="stat-img" alt=""><strong data-count="{{ review_cases }}">{{ review_cases }}</strong><span>Under Review</span></div></div>
+  <div class="col-6 col-md"><div class="stat portfolio-stat stat-pink sticker"><img src="{{ url_for('static', filename='images/stickers/document_pink.png') }}" class="stat-img" alt=""><strong data-count="{{ total_evidence }}">{{ total_evidence }}</strong><span>Evidence Items</span></div></div>
+  <div class="col-12 col-md"><div class="stat portfolio-stat stat-cyan sticker"><img src="{{ url_for('static', filename='images/stickers/check.png') }}" class="stat-img" alt=""><strong data-count="{{ closed_cases }}">{{ closed_cases }}</strong><span>Closed Cases</span></div></div>
+</div>
+
+<div class="row g-4 dashboard-panels">
+  <div class="col-lg-7">
+    <div class="panel portfolio-panel sticker">
+      <div class="panel-head"><h4>📋 Recent Cases</h4><a href="{{ url_for('cases') }}">View all →</a></div>
+      {% if recent_cases %}
+        {% for case in recent_cases %}
+        <div class="case-file portfolio-case-file">
+          <div class="cf-id">#{{ case.id }}</div>
+          <div class="cf-body">
+            <b>{{ case.title }}</b>
+            <div class="cf-meta">{{ status_badge(case.status) }} <span>📅 {{ case.created_at.strftime('%d %b %Y') }}</span> <span>📄 {{ case.evidence_items|length }} evidence</span></div>
+          </div>
+          <a class="btn btn-cc btn-cyan btn-sm" href="{{ url_for('case_detail', case_id=case.id) }}">View →</a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><img class="empty-sticker" src="{{ url_for('static', filename='images/stickers/detective_clipboard.png') }}" alt=""><h5>Your investigation board is empty!</h5><p>Create your first case to start investigating.</p><a class="btn btn-cc btn-purple" href="{{ url_for('new_case') }}">🚀 Create Case</a></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="panel portfolio-panel sticker">
+      <div class="panel-head"><h4>🗂️ Recent Evidence</h4></div>
+      {% if recent_evidence %}
+        {% for item in recent_evidence %}
+        <div class="evidence-mini portfolio-evidence-mini"><img class="mini-doc" src="{{ url_for('static', filename='images/stickers/document_small.png') }}" alt=""><div><b>{{ item.filename }}</b><br><small>Case #{{ item.case_id }} • {{ item.file_type }}</small></div></div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state"><img class="empty-sticker" src="{{ url_for('static', filename='images/stickers/magnifier.png') }}" alt=""><h5>No evidence found!</h5><p>Upload a file and let's investigate it.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

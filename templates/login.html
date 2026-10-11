@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="portfolio-auth">
+  <div class="auth-art"><img src="{{ url_for('static', filename='images/stickers/detective_laptop2.png') }}" alt="Detective"><img class="auth-art-fingerprint" src="{{ url_for('static', filename='images/stickers/fingerprint.png') }}" alt=""></div>
+  <div class="auth-card sticker pop auth-theme-card portfolio-auth-card">
+    <img class="auth-top-icon" src="{{ url_for('static', filename='images/stickers/shield_lock.png') }}" alt="">
+    <h2>Welcome Back,<br>Detective!</h2>
+    <p class="muted">Ready to solve another digital mystery?</p>
+    <form method="post">
+      <label class="form-label">Email</label>
+      <div class="input-group mb-3"><span class="input-group-text">📧</span><input class="form-control" type="email" name="email" required></div>
+      <label class="form-label">Password</label>
+      <div class="input-group mb-4"><span class="input-group-text">🔐</span><input class="form-control" type="password" name="password" required></div>
+      <button class="btn btn-cc btn-gradient w-100 btn-lg">🔓 Enter the Lab</button>
+    </form>
+    <p class="text-center mt-3 mb-0">New investigator? <a href="{{ url_for('register') }}">Create an account</a></p>
+    <div class="demo-box mt-4"><b>🤖 Demo admin</b><br>admin@cyberlab.local<br>admin123</div>
+  </div>
+</div>
+{% endblock %}
